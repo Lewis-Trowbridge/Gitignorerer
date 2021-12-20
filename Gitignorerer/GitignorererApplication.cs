@@ -7,13 +7,28 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace Gitignorerer
 {
-    public class GitignorererApplication
+    public class GitignorererApplication : IGitignorererApplication
     {
-        public static void Run(CommandArgument ignoreFileNames)
+
+        private readonly IConsole _console;
+
+        public GitignorererApplication(IConsole console)
         {
-            foreach (var ignoreFileName in ignoreFileNames.Values)
+            _console = console;
+        }
+
+        public void Run(string[] ignoreFileNames)
+        {
+            if (ignoreFileNames != null)
             {
-                // Do things
+                foreach (var ignoreFileName in ignoreFileNames)
+                {
+                    // Do things
+                }
+            }
+            else
+            {
+                _console.WriteLine("No ignore files given, exiting");
             }
         }
     }

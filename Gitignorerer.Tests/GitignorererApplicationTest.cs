@@ -20,10 +20,23 @@ namespace Gitignorerer.Tests
         [Fact]
         public void GitignorererApplication_WhenNoIgnoreFilesGiven_LogsAndExits()
         {
+            var expectedMessage = "No ignore files given, exiting";
+
             gitignorererApplication.Run(null);
 
-            mockConsole.Verify(console => console.WriteLine("No ignore files given, exiting"), Times.Once());
+            mockConsole.Verify(console => console.WriteLine(expectedMessage), Times.Once());
             mockConsole.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GitignorererApplication_WhenIgnoreFilesGiven_DoesNotLogExitMessage()
+        {
+            var expectedMessage = "No ignore files given, exiting";
+
+            gitignorererApplication.Run(new string[] { "test" });
+
+            mockConsole.Verify(console => console.WriteLine(expectedMessage), Times.Never);
+
         }
     }
 }

@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
+using Gitignorerer.Utils;
 
 namespace Gitignorerer
 {
     public class GitignorererApplication : IGitignorererApplication
     {
 
-        private readonly IConsole _console;
+        private readonly IConsoleWrapper _console;
 
-        public GitignorererApplication(IConsole console)
+        public GitignorererApplication(IConsoleWrapper console)
         {
             _console = console;
         }

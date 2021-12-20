@@ -1,5 +1,6 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
+using Gitignorerer.Utils;
 
 namespace Gitignorerer
 {
@@ -13,6 +14,7 @@ namespace Gitignorerer
             var services = new ServiceCollection()
                 .AddSingleton<IGitignorererApplication, GitignorererApplication>()
                 .AddSingleton(PhysicalConsole.Singleton)
+                .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
                 .BuildServiceProvider();
 
             var app = new CommandLineApplication<Program>();

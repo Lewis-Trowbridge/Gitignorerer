@@ -13,11 +13,12 @@ namespace Gitignorerer
     {
 
         private readonly IConsoleWrapper _console;
-        private readonly 
+        private readonly IGithubGitignoreClient _githubGitignoreClient;
 
-        public GitignorererApplication(IConsoleWrapper console,)
+        public GitignorererApplication(IConsoleWrapper console, IGithubGitignoreClient githubGitignoreClient )
         {
             _console = console;
+            _githubGitignoreClient = githubGitignoreClient;
         }
 
         public void Run(string[] ignoreFileNames)

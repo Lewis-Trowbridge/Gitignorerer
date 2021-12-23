@@ -2,6 +2,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Xunit;
 using Moq;
 using Gitignorerer.Utils;
+using Gitignorerer.API;
 
 namespace Gitignorerer.Tests
 {
@@ -9,12 +10,15 @@ namespace Gitignorerer.Tests
     {
         private readonly Mock<IConsoleWrapper> mockConsole;
 
+        private readonly Mock<IGithubGitignoreClient> mockGithubGitignoreClient;
+
         private readonly GitignorererApplication gitignorererApplication;
 
         public GitignorererApplicationTest()
         {
             mockConsole = new Mock<IConsoleWrapper>();
-            gitignorererApplication = new GitignorererApplication(mockConsole.Object);
+            mockGithubGitignoreClient = new Mock<IGithubGitignoreClient>();
+            gitignorererApplication = new GitignorererApplication(mockConsole.Object, mockGithubGitignoreClient.Object);
         }
 
         [Fact]

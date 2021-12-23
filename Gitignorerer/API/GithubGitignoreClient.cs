@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using Gitignorerer.Utils;
@@ -33,10 +34,7 @@ namespace Gitignorerer.API
 
         private string[] SplitTemplateListIntoStringArray(string templateListString)
         {
-            return templateListString
-                .Replace("[", "")
-                .Replace("]", "")
-                .Split(Environment.NewLine);
+            return JsonSerializer.Deserialize<List<string>>(templateListString).ToArray();
         }
     }
 }

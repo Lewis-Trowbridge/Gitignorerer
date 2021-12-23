@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
+using System.IO;
+using Gitignorerer.Utils;
 using Gitignorerer.API;
 using Xunit;
 using Moq;
@@ -28,14 +30,27 @@ namespace Gitignorerer.Tests.API
         }
 
         [Fact]
-        public async void GithubGitignoreClient_WhenCalled_CallsCorrectUrl()
+        public async void GithubGitignoreClient_WhenGetNamesCalled_CallsCorrectUrl()
         {
             var expectedUrl = "https://api.github.com/gitignore/templates";
-            _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, "");
+            _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, "[]");
 
             await _githubGitignoreClient.GetTemplateNames();
 
             _mockHttpMessageHandler.VerifyRequest(expectedUrl);
+        }
+
+        [Fact]
+        public async void GithubGitignoreClient_WhenGetNamesCalled_ReturnsCorrectList()
+        {
+            var expectedUrl = "https://api.github.com/gitignore/templates";
+            var mockResponse = File.ReadAllText("API/Assets/templates.json");
+            string[] expectedResult = { "VisualStudio", "Python", "Kotlin" };
+            _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, mockResponse);
+
+            var realResult = await _githubGitignoreClient.GetTemplateNames();
+
+            realResult.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

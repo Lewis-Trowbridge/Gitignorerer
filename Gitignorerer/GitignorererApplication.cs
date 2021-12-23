@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Gitignorerer.Utils;
+using Gitignorerer.API;
 
 namespace Gitignorerer
 {
@@ -12,8 +13,9 @@ namespace Gitignorerer
     {
 
         private readonly IConsoleWrapper _console;
+        private readonly 
 
-        public GitignorererApplication(IConsoleWrapper console)
+        public GitignorererApplication(IConsoleWrapper console,)
         {
             _console = console;
         }

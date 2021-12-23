@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
+using Gitignorerer.Utils;
 
 namespace Gitignorerer.API
 {
-    public class GithubGitignoreClient
+    public class GithubGitignoreClient : IGithubGitignoreClient
     {
         private readonly HttpClient _client;
 
@@ -23,6 +24,11 @@ namespace Gitignorerer.API
             var response = await _client.GetAsync("/gitignore/templates");
             var templateString = await response.Content.ReadAsStringAsync();
             return SplitTemplateListIntoStringArray(templateString);
+        }
+
+        public Task<IgnoreSection> GetTemplateString()
+        {
+            throw new NotImplementedException();
         }
 
         private string[] SplitTemplateListIntoStringArray(string templateListString)

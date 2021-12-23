@@ -34,7 +34,7 @@ namespace Gitignorerer.API
 
         private string[] SplitTemplateListIntoStringArray(string templateListString)
         {
-            return JsonSerializer.Deserialize<List<string>>(templateListString).ToArray();
+            return JsonSerializer.Deserialize<string[]>(templateListString);
         }
     }
 }

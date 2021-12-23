@@ -27,9 +27,14 @@ namespace Gitignorerer.API
             return SplitTemplateListIntoStringArray(templateString);
         }
 
-        public Task<IgnoreSection> GetTemplateString(string name)
+        public async Task<IgnoreSection> GetTemplate(string name)
         {
-            throw new NotImplementedException();
+            var response = await _client.GetAsync($"/gitignore/templates/{name}");
+            return new IgnoreSection
+            {
+                Name = name,
+                IgnoreLines = (await response.Content.ReadAsStringAsync()).Split("\n")
+            };
         }
 
         private string[] SplitTemplateListIntoStringArray(string templateListString)

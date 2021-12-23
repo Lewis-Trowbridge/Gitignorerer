@@ -52,5 +52,34 @@ namespace Gitignorerer.Tests.API
 
             realResult.Should().BeEquivalentTo(expectedResult);
         }
+
+
+        [Fact]
+        public async void GithubGitignoreClient_WhenGetTemplateCalled_CallsCorrectUrl()
+        {
+            var expectedUrl = "https://api.github.com/gitignore/templates/test";
+            _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, "");
+
+            await _githubGitignoreClient.GetTemplate("test");
+
+            _mockHttpMessageHandler.VerifyRequest(expectedUrl);
+        }
+
+        [Fact]
+        public async void GithubGitignoreClient_WhenGetTemplateCalled_GetsIgnoreSection()
+        {
+            var expectedUrl = "https://api.github.com/gitignore/templates/test";
+            var mockGitignore = File.ReadAllText("API/Assets/mockgitignore.txt");
+            var expectedResult = new IgnoreSection
+            {
+                Name = "test",
+                IgnoreLines = new string[] { "DEFINITELY\r", "\r", "A\r", "\r", "GITIGNORE\r", "FILE" }
+            };
+            _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, mockGitignore);
+
+            var realResult = await _githubGitignoreClient.GetTemplate("test");
+
+            realResult.Should().BeEquivalentTo(expectedResult);
+        }
     }
 }

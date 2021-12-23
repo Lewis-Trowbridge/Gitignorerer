@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.IO;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
@@ -58,11 +59,12 @@ namespace Gitignorerer.Tests.API
         public async void GithubGitignoreClient_WhenGetTemplateCalled_CallsCorrectUrl()
         {
             var expectedUrl = "https://api.github.com/gitignore/templates/test";
+            var expectedAcceptHeader = new MediaTypeHeaderValue("application/vnd.github.v3.raw");
             _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, "");
 
             await _githubGitignoreClient.GetTemplate("test");
 
-            _mockHttpMessageHandler.VerifyRequest(expectedUrl);
+            _mockHttpMessageHandler.VerifyRequest(expectedUrl, r => r.Headers.Accept.Contains(expectedAcceptHeader));
         }
 
         [Fact]
@@ -74,11 +76,11 @@ namespace Gitignorerer.Tests.API
             {
                 Name = "test",
                 IgnoreLines = new string[] { 
-                    $"DEFINITELY\n",
-                    "\n",
-                    $"A\n",
-                    "\n",
-                    $"GITIGNORE\n",
+                    $"DEFINITELY",
+                    "",
+                    $"A",
+                    "",
+                    $"GITIGNORE",
                     "FILE"
                 }
             };

@@ -34,7 +34,7 @@ namespace Gitignorerer.API
             return new IgnoreSection
             {
                 Name = name,
-                IgnoreLines = Regex.Split(await response.Content.ReadAsStringAsync(), @"(?<=[\n])")
+                IgnoreLines = (await response.Content.ReadAsStringAsync()).Split("\n")
             };
         }
 

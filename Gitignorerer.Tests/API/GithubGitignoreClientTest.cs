@@ -73,7 +73,14 @@ namespace Gitignorerer.Tests.API
             var expectedResult = new IgnoreSection
             {
                 Name = "test",
-                IgnoreLines = new string[] { "DEFINITELY\r", "\r", "A\r", "\r", "GITIGNORE\r", "FILE" }
+                IgnoreLines = new string[] { 
+                    $"DEFINITELY{Environment.NewLine}",
+                    Environment.NewLine,
+                    $"A{Environment.NewLine}",
+                    Environment.NewLine,
+                    $"GITIGNORE{Environment.NewLine}",
+                    "FILE"
+                }
             };
             _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, mockGitignore);
 

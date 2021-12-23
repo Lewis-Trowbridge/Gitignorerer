@@ -69,16 +69,16 @@ namespace Gitignorerer.Tests.API
         public async void GithubGitignoreClient_WhenGetTemplateCalled_GetsIgnoreSection()
         {
             var expectedUrl = "https://api.github.com/gitignore/templates/test";
-            var mockGitignore = File.ReadAllText("API/Assets/mockgitignore.txt");
+            var mockGitignore = "DEFINITELY\n\nA\n\nGITIGNORE\nFILE";
             var expectedResult = new IgnoreSection
             {
                 Name = "test",
                 IgnoreLines = new string[] { 
-                    $"DEFINITELY{Environment.NewLine}",
-                    Environment.NewLine,
-                    $"A{Environment.NewLine}",
-                    Environment.NewLine,
-                    $"GITIGNORE{Environment.NewLine}",
+                    $"DEFINITELY\n",
+                    "\n",
+                    $"A\n",
+                    "\n",
+                    $"GITIGNORE\n",
                     "FILE"
                 }
             };

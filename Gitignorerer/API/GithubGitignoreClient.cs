@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
@@ -33,7 +34,7 @@ namespace Gitignorerer.API
             return new IgnoreSection
             {
                 Name = name,
-                IgnoreLines = (await response.Content.ReadAsStringAsync()).Split("\n")
+                IgnoreLines = Regex.Split(await response.Content.ReadAsStringAsync(), @"(?<=[\n])")
             };
         }
 

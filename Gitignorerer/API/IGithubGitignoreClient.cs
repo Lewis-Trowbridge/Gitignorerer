@@ -10,6 +10,6 @@ namespace Gitignorerer.API
     public interface IGithubGitignoreClient
     {
         public Task<string[]> GetTemplateNames();
-        public Task<IgnoreSection> GetTemplateString();
+        public Task<IgnoreSection> GetTemplateString(string name);
     }
 }

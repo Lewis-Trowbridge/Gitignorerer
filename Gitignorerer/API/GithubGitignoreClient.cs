@@ -26,7 +26,7 @@ namespace Gitignorerer.API
             return SplitTemplateListIntoStringArray(templateString);
         }
 
-        public Task<IgnoreSection> GetTemplateString()
+        public Task<IgnoreSection> GetTemplateString(string name)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,4 @@
-using McMaster.Extensions.CommandLineUtils;
+using System;
 using Xunit;
 using Moq;
 using Gitignorerer.Utils;
@@ -22,7 +22,7 @@ namespace Gitignorerer.Tests
         }
 
         [Fact]
-        public async void GitignorererApplication_WhenNoIgnoreFilesGiven_LogsAndExits()
+        public void GitignorererApplication_WhenNoIgnoreFilesGiven_LogsAndExits()
         {
             var expectedMessage = "No ignore files given, exiting";
 
@@ -58,7 +58,7 @@ namespace Gitignorerer.Tests
         public void GitignorererApplication_WhenInvalidIgnoreFileNameGiven_LogsErrorMessage()
         {
             var mockInvalidName = "invalid";
-            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new string[0]);
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(Array.Empty<string>());
 
             gitignorererApplication.Run(new string[] { mockInvalidName });
 

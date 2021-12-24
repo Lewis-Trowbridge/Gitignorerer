@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gitignorerer.Utils
 {
-    public class IgnoreSection
+    public struct IgnoreSection
     {
         public string Name { get; set; }
         public string[] IgnoreLines { get; set; }

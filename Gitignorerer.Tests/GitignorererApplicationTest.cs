@@ -1,7 +1,8 @@
-using McMaster.Extensions.CommandLineUtils;
+using System;
 using Xunit;
 using Moq;
 using Gitignorerer.Utils;
+using Gitignorerer.API;
 
 namespace Gitignorerer.Tests
 {
@@ -9,12 +10,15 @@ namespace Gitignorerer.Tests
     {
         private readonly Mock<IConsoleWrapper> mockConsole;
 
+        private readonly Mock<IGithubGitignoreClient> mockGithubGitignoreClient;
+
         private readonly GitignorererApplication gitignorererApplication;
 
         public GitignorererApplicationTest()
         {
             mockConsole = new Mock<IConsoleWrapper>();
-            gitignorererApplication = new GitignorererApplication(mockConsole.Object);
+            mockGithubGitignoreClient = new Mock<IGithubGitignoreClient>();
+            gitignorererApplication = new GitignorererApplication(mockConsole.Object, mockGithubGitignoreClient.Object);
         }
 
         [Fact]
@@ -37,6 +41,28 @@ namespace Gitignorerer.Tests
 
             mockConsole.Verify(console => console.WriteLine(expectedMessage), Times.Never);
 
+        }
+
+        [Fact]
+        public void GitignorererApplication_WhenValidIgnoreFileNameGiven_GetsIgnoreSection()
+        {
+            var mockValidName = "test";
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new string[] { mockValidName });
+
+            gitignorererApplication.Run(new string[]{ mockValidName });
+
+            mockGithubGitignoreClient.Verify(mock => mock.GetTemplate(mockValidName));
+        }
+
+        [Fact]
+        public void GitignorererApplication_WhenInvalidIgnoreFileNameGiven_LogsErrorMessage()
+        {
+            var mockInvalidName = "invalid";
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(Array.Empty<string>());
+
+            gitignorererApplication.Run(new string[] { mockInvalidName });
+
+            mockConsole.Verify(mock => mock.WriteLine($"{mockInvalidName} is not a valid file name, skipping..."));
         }
     }
 }

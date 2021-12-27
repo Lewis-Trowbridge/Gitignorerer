@@ -1,6 +1,7 @@
 ﻿using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Gitignorerer.Utils;
+using Gitignorerer.API;
 
 namespace Gitignorerer
 {
@@ -15,6 +16,7 @@ namespace Gitignorerer
                 .AddSingleton<IGitignorererApplication, GitignorererApplication>()
                 .AddSingleton(PhysicalConsole.Singleton)
                 .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
+                .AddSingleton<IGithubGitignoreClient, GithubGitignoreClient>()
                 .BuildServiceProvider();
 
             var app = new CommandLineApplication<Program>();

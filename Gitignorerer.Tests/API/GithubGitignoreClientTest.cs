@@ -72,10 +72,7 @@ namespace Gitignorerer.Tests.API
         {
             var expectedUrl = "https://api.github.com/gitignore/templates/test";
             var mockGitignore = "DEFINITELY\n\nA\n\nGITIGNORE\nFILE";
-            var expectedResult = new IgnoreSection
-            {
-                Name = "test",
-                IgnoreLines = new string[] { 
+            var expectedResult = new IgnoreSection("test", new string[] { 
                     $"DEFINITELY",
                     "",
                     $"A",
@@ -83,7 +80,7 @@ namespace Gitignorerer.Tests.API
                     $"GITIGNORE",
                     "FILE"
                 }
-            };
+            );
             _mockHttpMessageHandler.SetupRequest(expectedUrl).ReturnsResponse(HttpStatusCode.OK, mockGitignore);
 
             var realResult = await _githubGitignoreClient.GetTemplate("test");

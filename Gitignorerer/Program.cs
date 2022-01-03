@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
+using Gitignorerer.IO;
 
 namespace Gitignorerer
 {
@@ -17,6 +18,7 @@ namespace Gitignorerer
                 .AddSingleton(PhysicalConsole.Singleton)
                 .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
                 .AddSingleton<IGithubGitignoreClient, GithubGitignoreClient>()
+                .AddSingleton<IFileWrapper, FileWrapper>()
                 .BuildServiceProvider();
 
             var app = new CommandLineApplication<Program>();

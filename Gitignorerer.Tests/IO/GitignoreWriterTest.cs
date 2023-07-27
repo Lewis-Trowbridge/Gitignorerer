@@ -29,19 +29,21 @@ namespace Gitignorerer.Tests.IO
         [Fact]
         public async void GitignoreWriter_WhenGitignorePresent_LogsMessage()
         {
-            var tempPath = Path.GetTempFileName();
-            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>(), new StringWriter(), tempPath);
-
-            _mockConsole.Verify(mock => mock.WriteLine("Found gitignore, writing to file..."), Times.Once);
+            using (await _writer.OpenGitignore(_tempFilePath))
+            {
+                _mockConsole.Verify(mock => mock.WriteLine("Found gitignore, writing to file..."), Times.Once);
+            }
         }
 
         [Fact]
         public async void GitignoreWriter_WhenGitignoreNotPresent_LogsMessage()
         {
-
-            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>(), new StringWriter());
-
-            _mockConsole.Verify(mock => mock.WriteLine("No gitignore found, creating new file..."), Times.Once);
+            File.Delete(_tempFilePath);
+            using (await _writer.OpenGitignore(_tempFilePath))
+            {
+                _mockConsole.Verify(mock => mock.WriteLine("No gitignore found, creating new file..."), Times.Once);
+            };
+            
         }
 
         protected virtual void Dispose(bool disposing)

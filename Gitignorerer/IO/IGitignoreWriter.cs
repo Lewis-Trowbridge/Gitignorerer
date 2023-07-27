@@ -4,6 +4,7 @@ namespace Gitignorerer.IO
 {
     public interface IGitignoreWriter
     {
-        Task WriteToGitignore(IgnoreSection[] ignoreSections, TextWriter fileWriter, string path);
+        Task<TextWriter> OpenGitignore(string path);
+        Task WriteToGitignore(IgnoreSection[] ignoreSections, TextWriter fileWriter);
     }
 }

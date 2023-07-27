@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
+using Gitignorerer.IO;
 
 namespace Gitignorerer
 {
@@ -13,24 +14,28 @@ namespace Gitignorerer
     {
 
         private readonly IConsoleWrapper _console;
-        private readonly IGithubGitignoreClient _githubGitignoreClient;
+        private readonly IGitignoreClient _gitignoreClient;
+        private readonly IGitignoreWriter _gitignoreWriter;
 
-        public GitignorererApplication(IConsoleWrapper console, IGithubGitignoreClient githubGitignoreClient )
+        public GitignorererApplication(IConsoleWrapper console, IGitignoreClient githubGitignoreClient, IGitignoreWriter gitignoreWriter)
         {
             _console = console;
-            _githubGitignoreClient = githubGitignoreClient;
+            _gitignoreClient = githubGitignoreClient;
+            _gitignoreWriter = gitignoreWriter;
+
         }
 
         public async void Run(string[] ignoreFileNames)
         {
             if (ignoreFileNames != null)
             {
-                var validIgnoreFileNames = await _githubGitignoreClient.GetTemplateNames();
+                var validIgnoreFileNames = await _gitignoreClient.GetTemplateNames();
+                ignoreFileNames.Where(ignoreFileNames.Contains).ToList();
                 foreach (var ignoreFileName in ignoreFileNames)
                 {
                     if (validIgnoreFileNames.Contains(ignoreFileName))
                     {
-                        var ignoreSection = await _githubGitignoreClient.GetTemplate(ignoreFileName);
+                        var ignoreSection = await _gitignoreClient.GetTemplate(ignoreFileName);
                         // Write ignore section to file
                     }
                     else

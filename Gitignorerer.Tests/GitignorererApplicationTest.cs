@@ -3,6 +3,7 @@ using Xunit;
 using Moq;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
+using Gitignorerer.IO;
 
 namespace Gitignorerer.Tests
 {
@@ -10,15 +11,18 @@ namespace Gitignorerer.Tests
     {
         private readonly Mock<IConsoleWrapper> mockConsole;
 
-        private readonly Mock<IGithubGitignoreClient> mockGithubGitignoreClient;
+        private readonly Mock<IGitignoreClient> mockGithubGitignoreClient;
+
+        private readonly Mock<IGitignoreWriter> mockGitignoreWriter;
 
         private readonly GitignorererApplication gitignorererApplication;
 
         public GitignorererApplicationTest()
         {
             mockConsole = new Mock<IConsoleWrapper>();
-            mockGithubGitignoreClient = new Mock<IGithubGitignoreClient>();
-            gitignorererApplication = new GitignorererApplication(mockConsole.Object, mockGithubGitignoreClient.Object);
+            mockGithubGitignoreClient = new Mock<IGitignoreClient>();
+            mockGitignoreWriter= new Mock<IGitignoreWriter>();
+            gitignorererApplication = new GitignorererApplication(mockConsole.Object, mockGithubGitignoreClient.Object, mockGitignoreWriter.Object);
         }
 
         [Fact]

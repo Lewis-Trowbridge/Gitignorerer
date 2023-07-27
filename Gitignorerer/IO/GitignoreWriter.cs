@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Gitignorerer.Utils;
+﻿using Gitignorerer.Utils;
 
 namespace Gitignorerer.IO
 {
-    public class GitignoreWriter
+    public class GitignoreWriter : IGitignoreWriter
     {
-        private readonly IFileWrapper _fileWrapper;
         private readonly IConsoleWrapper _console;
 
-        public GitignoreWriter(IFileWrapper fileWrapper, IConsoleWrapper console)
+        public GitignoreWriter(IConsoleWrapper console)
         {
-            _fileWrapper = fileWrapper;
             _console = console;
         }
 
-        public async Task WriteToGitignore(IgnoreSection[] ignoreSections)
+        public async Task WriteToGitignore(IgnoreSection[] ignoreSections, TextWriter fileWriter, string path = "./gitignore")
         {
-            if (_fileWrapper.Exists())
+            if (File.Exists(path))
             {
                 _console.WriteLine("Found gitignore, writing to file...");
+                ignoreSections.Select(async section => await fileWriter.WriteAsync(section.ToString()));
             }
             else
             {

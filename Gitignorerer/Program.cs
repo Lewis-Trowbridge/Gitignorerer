@@ -17,9 +17,9 @@ namespace Gitignorerer
                 .AddSingleton<IGitignorererApplication, GitignorererApplication>()
                 .AddSingleton(PhysicalConsole.Singleton)
                 .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
-                .AddSingleton<HttpClient>()
-                .AddSingleton<IGithubGitignoreClient, GithubGitignoreClient>()
-                .AddSingleton<IFileWrapper, FileWrapper>()
+                .AddHttpClient()
+                .AddSingleton<IGitignoreClient, GithubGitignoreClient>()
+                .AddSingleton<IGitignoreWriter, GitignoreWriter>()
                 .BuildServiceProvider();
 
             var app = new CommandLineApplication<Program>();

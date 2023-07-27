@@ -8,8 +8,8 @@ namespace Gitignorerer.Utils
 {
     public record IgnoreSection
     {
-        public string Name { get; set; }
-        public string[] IgnoreLines { get; set; }
+        public string Name { get; }
+        public string[] IgnoreLines { get; }
 
         public IgnoreSection(string name, string[] ignoreLines)
         {

@@ -8,28 +8,29 @@ using FluentAssertions;
 using Xunit;
 using Gitignorerer.IO;
 using Gitignorerer.Utils;
+using System.IO;
 
 namespace Gitignorerer.Tests.IO
 {
-    public class GitignoreWriterTest
+    public class GitignoreWriterTest : IDisposable
     {
-        private readonly Mock<IFileWrapper> _mockFileWrapper;
         private readonly Mock<IConsoleWrapper> _mockConsole;
+        private readonly string _tempFilePath;
         private readonly GitignoreWriter _writer;
+        private bool disposedValue;
 
         public GitignoreWriterTest()
         {
-            _mockFileWrapper = new Mock<IFileWrapper>();
             _mockConsole = new Mock<IConsoleWrapper>();
-            _writer = new GitignoreWriter(_mockFileWrapper.Object, _mockConsole.Object);
+            _tempFilePath = Path.GetTempFileName();
+            _writer = new GitignoreWriter(_mockConsole.Object);
         }
 
         [Fact]
         public async void GitignoreWriter_WhenGitignorePresent_LogsMessage()
         {
-            _mockFileWrapper.Setup(mock => mock.Exists()).Returns(true);
-
-            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>());
+            var tempPath = Path.GetTempFileName();
+            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>(), new StringWriter(), tempPath);
 
             _mockConsole.Verify(mock => mock.WriteLine("Found gitignore, writing to file..."), Times.Once);
         }
@@ -37,11 +38,31 @@ namespace Gitignorerer.Tests.IO
         [Fact]
         public async void GitignoreWriter_WhenGitignoreNotPresent_LogsMessage()
         {
-            _mockFileWrapper.Setup(mock => mock.Exists()).Returns(false);
 
-            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>());
+            await _writer.WriteToGitignore(Array.Empty<IgnoreSection>(), new StringWriter());
 
             _mockConsole.Verify(mock => mock.WriteLine("No gitignore found, creating new file..."), Times.Once);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                File.Delete(_tempFilePath);
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -10,7 +10,7 @@ using Gitignorerer.Utils;
 
 namespace Gitignorerer.API
 {
-    public class GithubGitignoreClient : IGithubGitignoreClient
+    public class GithubGitignoreClient : IGitignoreClient
     {
         private readonly HttpClient _client;
 

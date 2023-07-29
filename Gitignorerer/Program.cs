@@ -1,18 +1,16 @@
 ﻿using Gitignorerer.API;
 using Gitignorerer.IO;
+using Gitignorerer.Parsers;
 using Gitignorerer.Utils;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gitignorerer
 {
-    [Command(Name = "Gitignorerer", Description = "A tool to make Gitignore files easily.")]
-    [HelpOption]
     public class Program
     {
-        public static void Main(string[] args)
+        public static Task<int> Main(string[] args)
         {
-
             var services = new ServiceCollection()
                 .AddSingleton<IGitignorererApplication, GitignorererApplication>()
                 .AddSingleton(PhysicalConsole.Singleton)
@@ -22,28 +20,24 @@ namespace Gitignorerer
                 .AddSingleton<IGitignoreWriter, GitignoreWriter>()
                 .BuildServiceProvider();
 
-            var app = new CommandLineApplication<Program>();
-
+            var app = new CommandLineApplication() 
+            { 
+                Name = "gitignorerer",
+                Description = "A tool to make Gitignore files easily.",
+            };
+            app.ValueParsers.Add(new StringToHashSetParser());
+            app.HelpOption();
+            var ignoreFiles = app.Argument<HashSet<string>>("Ignore files", "Ignore file names to add to a .gitignore file", multipleValues: true).IsRequired();
             app.Conventions
                 .UseDefaultConventions()
                 .UseConstructorInjection(services);
 
-            app.Execute(args);
-        }
+            app.OnExecuteAsync(async cancellationtoken =>
+            {
+                await services.GetRequiredService<IGitignorererApplication>().Run(ignoreFiles.ParsedValue);
+            });
 
-        [Argument(0, Name = "Ignore files", Description = "Ignore file names to add to a .gitignore file")]
-        public HashSet<string> IgnoreFileNames { get; }
-
-        private readonly IGitignorererApplication _gitignorererApplication;
-
-        public Program(IGitignorererApplication gitignorererApplication)
-        {
-            _gitignorererApplication = gitignorererApplication;
-        }
-
-        private async Task OnExecuteAsync()
-        {
-            await _gitignorererApplication.Run(IgnoreFileNames);
+            return app.ExecuteAsync(args);
         }
     }
 }

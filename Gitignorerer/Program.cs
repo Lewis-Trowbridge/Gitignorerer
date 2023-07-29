@@ -22,10 +22,12 @@ var app = new CommandLineApplication()
 };
 app.ValueParsers.Add(new StringToHashSetParser());
 app.HelpOption();
-var ignoreFiles = app.Argument<HashSet<string>>("Ignore files", "Ignore file names to add to a .gitignore file", multipleValues: true).IsRequired();
 app.Conventions
     .UseDefaultConventions()
     .UseConstructorInjection(services);
+
+var ignoreFiles = app.Argument<HashSet<string>>("Ignore files", "Ignore file names to add to a .gitignore file", multipleValues: true).IsRequired();
+
 
 app.OnExecuteAsync(async cancellationtoken =>
 {

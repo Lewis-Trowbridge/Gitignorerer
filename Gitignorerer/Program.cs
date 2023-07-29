@@ -6,14 +6,14 @@ using Gitignorerer.Utils;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 
-var services = new ServiceCollection()
-    .AddSingleton<IGitignorererApplication, GitignorererApplication>()
-    .AddSingleton(PhysicalConsole.Singleton)
-    .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
-    .AddHttpClient()
-    .AddSingleton<IGitignoreClient, GithubGitignoreClient>()
-    .AddSingleton<IGitignoreWriter, GitignoreWriter>()
-    .BuildServiceProvider();
+var builder = new ServiceCollection();
+builder.AddSingleton<IGitignorererApplication, GitignorererApplication>();
+builder.AddSingleton(PhysicalConsole.Singleton);
+builder.AddSingleton<IConsoleWrapper, ConsoleWrapper>();
+builder.AddHttpClient<IGitignoreClient, GithubGitignoreClient>();
+builder.AddSingleton<IGitignoreWriter, GitignoreWriter>();
+
+var services = builder.BuildServiceProvider();
 
 var app = new CommandLineApplication() 
 { 

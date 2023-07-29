@@ -1,6 +1,8 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Gitignorerer.API;
+using Gitignorerer.IO;
 using Gitignorerer.Utils;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gitignorerer
 {
@@ -15,6 +17,9 @@ namespace Gitignorerer
                 .AddSingleton<IGitignorererApplication, GitignorererApplication>()
                 .AddSingleton(PhysicalConsole.Singleton)
                 .AddSingleton<IConsoleWrapper, ConsoleWrapper>()
+                .AddHttpClient()
+                .AddSingleton<IGitignoreClient, GithubGitignoreClient>()
+                .AddSingleton<IGitignoreWriter, GitignoreWriter>()
                 .BuildServiceProvider();
 
             var app = new CommandLineApplication<Program>();
@@ -27,7 +32,7 @@ namespace Gitignorerer
         }
 
         [Argument(0, Name = "Ignore files", Description = "Ignore file names to add to a .gitignore file")]
-        public string[] IgnoreFileNames { get; }
+        public HashSet<string> IgnoreFileNames { get; }
 
         private readonly IGitignorererApplication _gitignorererApplication;
 
@@ -36,9 +41,9 @@ namespace Gitignorerer
             _gitignorererApplication = gitignorererApplication;
         }
 
-        private void OnExecute()
+        private async Task OnExecuteAsync()
         {
-            _gitignorererApplication.Run(IgnoreFileNames);
+            await _gitignorererApplication.Run(IgnoreFileNames);
         }
     }
 }

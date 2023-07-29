@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using McMaster.Extensions.CommandLineUtils;
-using Gitignorerer.Utils;
 using Gitignorerer.API;
+using Gitignorerer.IO;
+using Gitignorerer.Utils;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace Gitignorerer
 {
@@ -13,32 +15,41 @@ namespace Gitignorerer
     {
 
         private readonly IConsoleWrapper _console;
-        private readonly IGithubGitignoreClient _githubGitignoreClient;
+        private readonly IGitignoreClient _gitignoreClient;
+        private readonly IGitignoreWriter _gitignoreWriter;
 
-        public GitignorererApplication(IConsoleWrapper console, IGithubGitignoreClient githubGitignoreClient )
+        public GitignorererApplication(IConsoleWrapper console, IGitignoreClient githubGitignoreClient, IGitignoreWriter gitignoreWriter)
         {
             _console = console;
-            _githubGitignoreClient = githubGitignoreClient;
+            _gitignoreClient = githubGitignoreClient;
+            _gitignoreWriter = gitignoreWriter;
+
         }
 
-        public async void Run(string[] ignoreFileNames)
+        public async Task Run(HashSet<string>? givenIgnoreFileNames)
         {
-            if (ignoreFileNames != null)
+            if (givenIgnoreFileNames != null)
             {
-                var validIgnoreFileNames = await _githubGitignoreClient.GetTemplateNames();
-                foreach (var ignoreFileName in ignoreFileNames)
+                var validIgnoreFileNames = await _gitignoreClient.GetTemplateNames();
+                // Leaves only found valid names
+                validIgnoreFileNames.IntersectWith(givenIgnoreFileNames);
+
+                // Leaves only invalid names
+                givenIgnoreFileNames.ExceptWith(validIgnoreFileNames);
+
+                foreach (var invalidName in givenIgnoreFileNames)
                 {
-                    if (validIgnoreFileNames.Contains(ignoreFileName))
-                    {
-                        var ignoreSection = await _githubGitignoreClient.GetTemplate(ignoreFileName);
-                        // Write ignore section to file
-                    }
-                    else
-                    {
-                        _console.WriteLine($"{ignoreFileName} is not a valid file name, skipping...");
-                    }
+                    _console.WriteLine($"{invalidName} is not a valid file name, skipping...");
                 }
+
+                using var fileWriter = await _gitignoreWriter.OpenGitignore();
+                var validIgnoreSections = await Task.WhenAll(
+                    validIgnoreFileNames.Select(async ignoreFileName => await _gitignoreClient.GetTemplate(ignoreFileName)));
+
+                await _gitignoreWriter.WriteToGitignore(validIgnoreSections, fileWriter);
+                _console.WriteLine("Written to gitignore!");
             }
+
             else
             {
                 _console.WriteLine("No ignore files given, exiting");

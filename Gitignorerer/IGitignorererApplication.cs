@@ -9,6 +9,6 @@ namespace Gitignorerer
 {
     public interface IGitignorererApplication
     {
-        public Task Run(HashSet<string> ignoreFileNames);
+        public Task Run(HashSet<string>? ignoreFileNames);
     }
 }

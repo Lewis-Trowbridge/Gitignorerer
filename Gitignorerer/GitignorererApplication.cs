@@ -26,7 +26,7 @@ namespace Gitignorerer
 
         }
 
-        public async Task Run(HashSet<string> givenIgnoreFileNames)
+        public async Task Run(HashSet<string>? givenIgnoreFileNames)
         {
             if (givenIgnoreFileNames != null)
             {

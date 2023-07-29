@@ -11,7 +11,7 @@ namespace Gitignorerer.IO
             _console = console;
         }
 
-        public async Task<TextWriter> OpenGitignore(string path = "./gitignore")
+        public async Task<TextWriter> OpenGitignore(string path = "./.gitignore")
         {
             if (File.Exists(path))
             {

@@ -31,8 +31,10 @@ namespace Gitignorerer
             if (givenIgnoreFileNames != null)
             {
                 var validIgnoreFileNames = await _gitignoreClient.GetTemplateNames();
+                // Leaves only found valid names
                 validIgnoreFileNames.IntersectWith(givenIgnoreFileNames);
 
+                // Leaves only invalid names
                 givenIgnoreFileNames.ExceptWith(validIgnoreFileNames);
 
                 foreach (var invalidName in givenIgnoreFileNames)
@@ -40,7 +42,6 @@ namespace Gitignorerer
                     _console.WriteLine($"{invalidName} is not a valid file name, skipping...");
                 }
 
-                var writingTasks = new List<Task>();
                 using var fileWriter = await _gitignoreWriter.OpenGitignore();
                 var validIgnoreSections = await Task.WhenAll(
                     validIgnoreFileNames.Select(async ignoreFileName => await _gitignoreClient.GetTemplate(ignoreFileName)));

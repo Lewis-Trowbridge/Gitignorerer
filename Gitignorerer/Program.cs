@@ -1,8 +1,8 @@
-﻿using McMaster.Extensions.CommandLineUtils;
-using Microsoft.Extensions.DependencyInjection;
-using Gitignorerer.Utils;
-using Gitignorerer.API;
+﻿using Gitignorerer.API;
 using Gitignorerer.IO;
+using Gitignorerer.Utils;
+using McMaster.Extensions.CommandLineUtils;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gitignorerer
 {

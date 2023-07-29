@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Moq;
 using FluentAssertions;
-using Xunit;
 using Gitignorerer.IO;
 using Gitignorerer.Utils;
-using System.IO;
+using Moq;
+using Xunit;
 
 namespace Gitignorerer.Tests.IO
 {
@@ -42,7 +42,7 @@ namespace Gitignorerer.Tests.IO
             using (await _writer.OpenGitignore(_tempFilePath))
             {
                 _mockConsole.Verify(mock => mock.WriteLine("No gitignore found, creating new file..."), Times.Once);
-            };   
+            };
         }
 
         [Fact]

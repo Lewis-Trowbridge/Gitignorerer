@@ -1,15 +1,15 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.IO;
-using Gitignorerer.Utils;
+using FluentAssertions;
 using Gitignorerer.API;
-using Xunit;
+using Gitignorerer.Utils;
 using Moq;
 using Moq.Contrib.HttpClient;
-using FluentAssertions;
+using Xunit;
 
 namespace Gitignorerer.Tests.API
 {
@@ -18,7 +18,7 @@ namespace Gitignorerer.Tests.API
         private readonly GithubGitignoreClient _githubGitignoreClient;
         private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
         private readonly HttpClient _mockHttpClient;
-        
+
         public GithubGitignoreClientTest()
         {
             _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
@@ -69,7 +69,7 @@ namespace Gitignorerer.Tests.API
         {
             var expectedUrl = "https://api.github.com/gitignore/templates/test";
             var mockGitignore = "DEFINITELY\n\nA\n\nGITIGNORE\nFILE";
-            var expectedResult = new IgnoreSection("test", new string[] { 
+            var expectedResult = new IgnoreSection("test", new string[] {
                     $"DEFINITELY",
                     "",
                     $"A",

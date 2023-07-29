@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using McMaster.Extensions.CommandLineUtils;
-using Gitignorerer.Utils;
 using Gitignorerer.API;
 using Gitignorerer.IO;
-using System.Collections;
+using Gitignorerer.Utils;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace Gitignorerer
 {
@@ -48,7 +48,7 @@ namespace Gitignorerer
                 await _gitignoreWriter.WriteToGitignore(validIgnoreSections, fileWriter);
                 _console.WriteLine("Written to gitignore!");
             }
-                
+
             else
             {
                 _console.WriteLine("No ignore files given, exiting");

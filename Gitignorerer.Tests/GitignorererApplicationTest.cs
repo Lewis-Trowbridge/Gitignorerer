@@ -1,11 +1,11 @@
-using System;
-using Xunit;
-using Moq;
-using Gitignorerer.Utils;
-using Gitignorerer.API;
-using Gitignorerer.IO;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gitignorerer.API;
+using Gitignorerer.IO;
+using Gitignorerer.Utils;
+using Moq;
+using Xunit;
 
 namespace Gitignorerer.Tests
 {
@@ -23,7 +23,7 @@ namespace Gitignorerer.Tests
         {
             mockConsole = new Mock<IConsoleWrapper>();
             mockGithubGitignoreClient = new Mock<IGitignoreClient>();
-            mockGitignoreWriter= new Mock<IGitignoreWriter>();
+            mockGitignoreWriter = new Mock<IGitignoreWriter>();
             gitignorererApplication = new GitignorererApplication(mockConsole.Object, mockGithubGitignoreClient.Object, mockGitignoreWriter.Object);
         }
 

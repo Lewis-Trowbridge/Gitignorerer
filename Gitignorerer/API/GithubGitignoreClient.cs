@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using Gitignorerer.Utils;
+using System.Net.Http.Json;
 
 namespace Gitignorerer.API
 {
@@ -19,13 +20,13 @@ namespace Gitignorerer.API
             _client = httpClient;
             httpClient.BaseAddress = new Uri("https://api.github.com");
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.v3.raw"));
+            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(new ProductHeaderValue("Gitignorerer")));
         }
 
-        public async Task<string[]> GetTemplateNames()
+        public async Task<HashSet<string>> GetTemplateNames()
         {
             var response = await _client.GetAsync("/gitignore/templates");
-            var templateString = await response.Content.ReadAsStringAsync();
-            return SplitTemplateListIntoStringArray(templateString);
+            return await response.Content.ReadFromJsonAsync<HashSet<string>>() ?? new HashSet<string>();
         }
 
         public async Task<IgnoreSection> GetTemplate(string name)
@@ -33,7 +34,5 @@ namespace Gitignorerer.API
             var response = await _client.GetAsync($"/gitignore/templates/{name}");
             return new IgnoreSection(name, (await response.Content.ReadAsStringAsync()).Split("\n"));
         }
-
-        private static string[] SplitTemplateListIntoStringArray(string templateListString) => JsonSerializer.Deserialize<string[]>(templateListString) ?? Array.Empty<string>();
     }
 }

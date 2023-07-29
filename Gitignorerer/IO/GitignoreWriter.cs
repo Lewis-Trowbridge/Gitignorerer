@@ -29,7 +29,7 @@ namespace Gitignorerer.IO
 
         public async Task WriteToGitignore(IgnoreSection[] ignoreSections, TextWriter fileWriter)
         {
-            ignoreSections.Select(async section => await fileWriter.WriteAsync(section.ToString()));
+            await Task.WhenAll(ignoreSections.Select(async section => await fileWriter.WriteAsync(section.ToString())));
         }
     }
 }

@@ -7,6 +7,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
 using Gitignorerer.IO;
+using System.Collections;
 
 namespace Gitignorerer
 {
@@ -25,25 +26,29 @@ namespace Gitignorerer
 
         }
 
-        public async void Run(string[] ignoreFileNames)
+        public async Task Run(HashSet<string> givenIgnoreFileNames)
         {
-            if (ignoreFileNames != null)
+            if (givenIgnoreFileNames != null)
             {
                 var validIgnoreFileNames = await _gitignoreClient.GetTemplateNames();
-                ignoreFileNames.Where(ignoreFileNames.Contains).ToList();
-                foreach (var ignoreFileName in ignoreFileNames)
+                validIgnoreFileNames.IntersectWith(givenIgnoreFileNames);
+
+                givenIgnoreFileNames.ExceptWith(validIgnoreFileNames);
+
+                foreach (var invalidName in givenIgnoreFileNames)
                 {
-                    if (validIgnoreFileNames.Contains(ignoreFileName))
-                    {
-                        var ignoreSection = await _gitignoreClient.GetTemplate(ignoreFileName);
-                        // Write ignore section to file
-                    }
-                    else
-                    {
-                        _console.WriteLine($"{ignoreFileName} is not a valid file name, skipping...");
-                    }
+                    _console.WriteLine($"{invalidName} is not a valid file name, skipping...");
                 }
+
+                var writingTasks = new List<Task>();
+                using var fileWriter = await _gitignoreWriter.OpenGitignore();
+                var validIgnoreSections = await Task.WhenAll(
+                    validIgnoreFileNames.Select(async ignoreFileName => await _gitignoreClient.GetTemplate(ignoreFileName)));
+
+                await _gitignoreWriter.WriteToGitignore(validIgnoreSections, fileWriter);
+                _console.WriteLine("Written to gitignore!");
             }
+                
             else
             {
                 _console.WriteLine("No ignore files given, exiting");

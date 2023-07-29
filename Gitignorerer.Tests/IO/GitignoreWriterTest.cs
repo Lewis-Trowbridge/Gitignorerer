@@ -42,8 +42,19 @@ namespace Gitignorerer.Tests.IO
             using (await _writer.OpenGitignore(_tempFilePath))
             {
                 _mockConsole.Verify(mock => mock.WriteLine("No gitignore found, creating new file..."), Times.Once);
+            };   
+        }
+
+        [Fact]
+        public async void GitignoreWriter_WithValidContent_WritesToFile()
+        {
+            using var stringWriter = new StringWriter();
+            var expected = new IgnoreSection[]
+            {
+                new IgnoreSection("test1", new string[] { "1", "2", "3" })
             };
-            
+            await _writer.WriteToGitignore(expected, stringWriter);
+            stringWriter.ToString().Should().Be(string.Join("", expected.AsEnumerable()));
         }
 
         protected virtual void Dispose(bool disposing)

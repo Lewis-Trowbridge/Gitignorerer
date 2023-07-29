@@ -32,7 +32,7 @@ namespace Gitignorerer
         }
 
         [Argument(0, Name = "Ignore files", Description = "Ignore file names to add to a .gitignore file")]
-        public string[] IgnoreFileNames { get; }
+        public HashSet<string> IgnoreFileNames { get; }
 
         private readonly IGitignorererApplication _gitignorererApplication;
 
@@ -41,9 +41,9 @@ namespace Gitignorerer
             _gitignorererApplication = gitignorererApplication;
         }
 
-        private void OnExecute()
+        private async Task OnExecuteAsync()
         {
-            _gitignorererApplication.Run(IgnoreFileNames);
+            await _gitignorererApplication.Run(IgnoreFileNames);
         }
     }
 }

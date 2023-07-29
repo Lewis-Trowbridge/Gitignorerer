@@ -4,6 +4,8 @@ using Moq;
 using Gitignorerer.Utils;
 using Gitignorerer.API;
 using Gitignorerer.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gitignorerer.Tests
 {
@@ -26,45 +28,47 @@ namespace Gitignorerer.Tests
         }
 
         [Fact]
-        public void GitignorererApplication_WhenNoIgnoreFilesGiven_LogsAndExits()
+        public async void GitignorererApplication_WhenNoIgnoreFilesGiven_LogsAndExits()
         {
             var expectedMessage = "No ignore files given, exiting";
 
-            gitignorererApplication.Run(null);
+            await gitignorererApplication.Run(null);
 
             mockConsole.Verify(console => console.WriteLine(expectedMessage), Times.Once());
             mockConsole.VerifyNoOtherCalls();
         }
 
         [Fact]
-        public void GitignorererApplication_WhenIgnoreFilesGiven_DoesNotLogExitMessage()
+        public async void GitignorererApplication_WhenIgnoreFilesGiven_DoesNotLogExitMessage()
         {
             var expectedMessage = "No ignore files given, exiting";
+            var mockValidName = "test";
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new HashSet<string>(new string[] { mockValidName }));
 
-            gitignorererApplication.Run(new string[] { "test" });
+            await gitignorererApplication.Run(new HashSet<string>(new string[] { mockValidName }));
 
             mockConsole.Verify(console => console.WriteLine(expectedMessage), Times.Never);
 
         }
 
         [Fact]
-        public void GitignorererApplication_WhenValidIgnoreFileNameGiven_GetsIgnoreSection()
+        public async void GitignorererApplication_WhenValidIgnoreFileNameGiven_GetsIgnoreSection()
         {
             var mockValidName = "test";
-            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new string[] { mockValidName });
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new HashSet<string>(new string[] { mockValidName }));
 
-            gitignorererApplication.Run(new string[]{ mockValidName });
+            await gitignorererApplication.Run(new HashSet<string>(new string[] { mockValidName }));
 
             mockGithubGitignoreClient.Verify(mock => mock.GetTemplate(mockValidName));
         }
 
         [Fact]
-        public void GitignorererApplication_WhenInvalidIgnoreFileNameGiven_LogsErrorMessage()
+        public async void GitignorererApplication_WhenInvalidIgnoreFileNameGiven_LogsErrorMessage()
         {
             var mockInvalidName = "invalid";
-            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(Array.Empty<string>());
+            mockGithubGitignoreClient.Setup(mock => mock.GetTemplateNames()).ReturnsAsync(new HashSet<string>());
 
-            gitignorererApplication.Run(new string[] { mockInvalidName });
+            await gitignorererApplication.Run(new HashSet<string>(new string[] { mockInvalidName }));
 
             mockConsole.Verify(mock => mock.WriteLine($"{mockInvalidName} is not a valid file name, skipping..."));
         }

@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - pack-as-tool
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Pack tool
+        run: dotnet pack -c Release -o ./nuget --no-restore
+      - name: Push to Nuget
+        run: glob nuget/*.nupkg | dotnet nuget push -k ${{ secrets.NUGET_API_KEY }}

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Gitignorerer": {
+      "commandName": "Project",
+      "commandLineArgs": "AL e"
+    }
+  }
+}

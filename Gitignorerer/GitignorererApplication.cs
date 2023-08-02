@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Gitignorerer.API;
+﻿using Gitignorerer.API;
 using Gitignorerer.IO;
 using Gitignorerer.Utils;
-using McMaster.Extensions.CommandLineUtils;
 
 namespace Gitignorerer
 {

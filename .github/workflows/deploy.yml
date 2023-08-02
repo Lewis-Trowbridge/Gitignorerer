@@ -20,4 +20,4 @@ jobs:
       - name: Pack tool
         run: dotnet pack -c Release -o ./nuget --no-restore
       - name: Push to Nuget
-        run: dotnet nuget push nuget/*.nupkg -k ${{ secrets.NUGET_API_KEY }} 
+        run: dotnet nuget push nuget/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
